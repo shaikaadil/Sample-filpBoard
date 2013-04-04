@@ -1,49 +1,55 @@
 //
-//  ViewController.m
+//  HostViewController.m
 //  SampleNews5
 //
-//  Created by Aadil Shaik on 18/03/13.
+//  Created by Aadil Shaik on 21/03/13.
 //  Copyright (c) 2013 Verve Infinite Developer Aadil Shaik. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "MainViewController.h"
+#import "HostViewController.h"
 #import "NewsViewController.h"
+@interface HostViewController ()
 
-#define FRAME_MARGIN	60
-#define MOVIE_MIN		1
-#define MOVIE_MAX		3
-
-@interface ViewController ()
 @property (assign, nonatomic) int previousIndex;
 @property (assign, nonatomic) int tentativeIndex;
 @property (assign, nonatomic) BOOL observerAdded;
-@end
 
-@implementation ViewController
+@end
+#define FRAME_MARGIN	60
+#define MOVIE_MIN		1
+#define MOVIE_MAX		10
+@implementation HostViewController
 @synthesize frame = _frame;
 @synthesize flipViewController = _flipViewController;
 @synthesize corkboard = _corkboard;
 @synthesize previousIndex = _previousIndex;
 @synthesize tentativeIndex = _tentativeIndex;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view from its nib.
     self.previousIndex = MOVIE_MIN;
-	self.view.backgroundColor=[UIColor blackColor];
+	
 	// Configure the page view controller and add it as a child view controller.
-	self.flipViewController = [[MPFlipViewController alloc] initWithOrientation:[self flipViewController:nil orientationForInterfaceOrientation:UIInterfaceOrientationPortrait]];
+	self.flipViewController = [[MPFlipViewController alloc] initWithOrientation:[self flipViewController:nil orientationForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation]];
 	self.flipViewController.delegate = self;
 	self.flipViewController.dataSource = self;
 	
 	// Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
-	BOOL hasFrame = self.frame != nil;
+	//BOOL hasFrame = self.frame != nil;
 	CGRect pageViewRect = self.view.bounds;
 	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
 	{
-		pageViewRect = CGRectInset(pageViewRect,0 + (hasFrame? FRAME_MARGIN : 0), 0 + (hasFrame? FRAME_MARGIN : 0));
+		//pageViewRect = CGRectInset(pageViewRect,0 + (hasFrame? FRAME_MARGIN : 0), 0 + (hasFrame? FRAME_MARGIN : 0));
 		self.flipViewController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 	}
 	else
@@ -61,11 +67,11 @@
 	// Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
 	self.view.gestureRecognizers = self.flipViewController.gestureRecognizers;
 	
-	[self.corkboard setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Pattern - Corkboard"]]];
-	if (self.frame)
-	{
-		[self.frame setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Pattern - Apple Wood"]]];
-	}
+    //	[self.corkboard setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Pattern - Corkboard"]]];
+    //	if (self.frame)
+    //	{
+    //		[self.frame setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Pattern - Apple Wood"]]];
+    //	}
 	
 	[self addObserver];
 
@@ -101,25 +107,21 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	if ([self flipViewController])
-		//return [[self flipViewController] shouldAutorotateToInterfaceOrientation:interfaceOrientation];
-        //return [[self flipViewController] shouldAutorotate];
-        return NO;
+		return [[self flipViewController] shouldAutorotateToInterfaceOrientation:interfaceOrientation];
 	else
-		return NO;
+		return YES;
 }
 - (UIViewController *)contentViewWithIndex:(int)index
 {
 	//UIStoryboard *storyboard = [UIStoryboard storyboardWithName:[self storyboardName] bundle:nil];
 	//ContentViewController *page = [storyboard instantiateViewControllerWithIdentifier:CONTENT_IDENTIFIER];
-    
    
-    
-     MainViewController*  page=[[MainViewController alloc]initWithNibName:@"MainViewController" bundle:nil];
-   
-        page.movieIndex = index;
+        NewsViewController* page=[[NewsViewController alloc]initWithNibName:@"NewsViewController" bundle:nil];
+        page.movieIndex =index;
         page.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         return page;
     
+	
 }
 #pragma mark - MPFlipViewControllerDelegate protocol
 
@@ -167,6 +169,7 @@
 {
 	NSLog(@"Notification received: %@", notification);
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

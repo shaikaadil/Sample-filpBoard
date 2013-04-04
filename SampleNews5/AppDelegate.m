@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-
 #import "ViewController.h"
 
 @implementation AppDelegate
@@ -17,7 +16,11 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    self.window.rootViewController = self.viewController;
+    UINavigationController *navController=[[UINavigationController alloc]initWithRootViewController:self.viewController];
+    navController.navigationBarHidden=YES;
+[navController.navigationBar setBarStyle:UIBarStyleBlackOpaque];
+    navController.title=@"News";
+    self.window.rootViewController =navController;
     [self.window makeKeyAndVisible];
     return YES;
 }
